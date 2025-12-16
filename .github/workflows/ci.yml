@@ -33,8 +33,23 @@ jobs:
       - name: Verify tools
         shell: bash
         run: |
-          set +u
-          source "$HOME/.gvm/scripts/gvm"
-          go version
-          uv --version
-          rustc --version
+          set +e
+          set +u 2>/dev/null || true
+
+          export GVM_NO_GIT_BAK=${GVM_NO_GIT_BAK:-0}
+          export GVM_DEBUG=${GVM_DEBUG:-0}
+
+          if [[ ! -s "$HOME/.gvm/scripts/gvm" ]]; then
+            echo "gvm not found at $HOME/.gvm/scripts/gvm"
+            exit 1
+          fi
+
+          source "$HOME/.gvm/scripts/gvm" || true
+          gvm use go1.23.4 --default || true
+
+          export PATH="$HOME/.local/bin:$PATH"
+          [[ -f "$HOME/.cargo/env" ]] && source "$HOME/.cargo/env"
+
+          command -v go >/dev/null && go version || { echo "go not found"; exit 1; }
+          command -v uv >/dev/null && uv --version || { echo "uv not found"; exit 1; }
+          command -v rustc >/dev/null && rustc --version || { echo "rustc not found"; exit 1; }
