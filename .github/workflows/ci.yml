@@ -45,7 +45,12 @@ jobs:
           fi
 
           source "$HOME/.gvm/scripts/gvm" || true
-          gvm use go1.23.4 --default || true
+
+          # Ensure a gvm-managed Go exists for the verify step
+          if ! gvm list | grep -q "go1.23.4"; then
+            gvm install go1.23.4 -B || { echo "gvm install failed"; exit 1; }
+          fi
+          gvm use go1.23.4 --default || { echo "gvm use failed"; exit 1; }
 
           export PATH="$HOME/.local/bin:$PATH"
           [[ -f "$HOME/.cargo/env" ]] && source "$HOME/.cargo/env"
