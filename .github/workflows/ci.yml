@@ -18,14 +18,23 @@ jobs:
   smoke-macos:
     strategy:
       matrix:
-        os: [macos-13, macos-14]
+        os: [macos-latest, macos-15-intel] # macos-latest=15/arm64, macos-15-intel=x86_64
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Non-interactive smoke test (exit via q)
+      - name: Install all (non-interactive)
         env:
           TERM: xterm-256color
         run: |
-          printf 'q\n' | bash install.sh
+          { printf 'all\nY\n'; yes '' | head -n 20; } | bash install.sh
+
+      - name: Verify tools
+        shell: bash
+        run: |
+          set +u
+          source "$HOME/.gvm/scripts/gvm"
+          go version
+          uv --version
+          rustc --version
