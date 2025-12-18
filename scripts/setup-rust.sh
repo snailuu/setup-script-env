@@ -54,7 +54,12 @@ cat << "EOF"
 EOF
 
 echo ""
-read -p "按 Enter 继续，或 Ctrl+C 取消..." < /dev/tty
+# 检测是否有 TTY 可用
+if [ -r /dev/tty ]; then
+    read -p "按 Enter 继续，或 Ctrl+C 取消..." < /dev/tty
+else
+    read -p "按 Enter 继续，或 Ctrl+C 取消..."
+fi
 
 # ============================================
 # 步骤 1: 检查并安装 Homebrew
