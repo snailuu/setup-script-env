@@ -54,7 +54,7 @@ cat << "EOF"
 EOF
 
 echo ""
-read -p "按 Enter 继续，或 Ctrl+C 取消..."
+read -p "按 Enter 继续，或 Ctrl+C 取消..." < /dev/tty
 
 # ============================================
 # 步骤 1: 检查并安装 Homebrew

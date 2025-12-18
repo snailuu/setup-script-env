@@ -61,7 +61,7 @@ cat << "EOF"
 EOF
 
 echo ""
-read -p "按 Enter 继续，或 Ctrl+C 取消..."
+read -p "按 Enter 继续，或 Ctrl+C 取消..." < /dev/tty
 
 # ============================================
 # 步骤 1: 检查并安装 Homebrew
@@ -252,13 +252,13 @@ if command -v go &> /dev/null; then
         echo "      → 更统一但需要额外步骤"
         echo ""
 
-        read -p "请选择 (1/2，默认为 1): " -n 1 -r
+        read -p "请选择 (1/2，默认为 1): " -n 1 -r < /dev/tty
         echo
 
         if [[ $REPLY =~ ^[2]$ ]]; then
             print_warning "准备卸载 Homebrew Go..."
             echo ""
-            read -p "确认卸载？这将删除 $(go version)  (y/N): " -n 1 -r
+            read -p "确认卸载？这将删除 $(go version)  (y/N): " -n 1 -r < /dev/tty
             echo
 
             if [[ $REPLY =~ ^[Yy]$ ]]; then
@@ -315,7 +315,7 @@ else
                 echo "      → 跳过此步骤继续配置"
                 echo ""
 
-                read -p "请选择 (1/2): " -n 1 -r
+                read -p "请选择 (1/2): " -n 1 -r < /dev/tty
                 echo
 
                 if [[ $REPLY =~ ^[1]$ ]] || [[ -z $REPLY ]]; then
@@ -344,7 +344,7 @@ else
                         echo "      → 参考 HOMEBREW_GO_BUG.md"
                         echo ""
 
-                        read -p "请选择 (1/2): " -n 1 -r
+                        read -p "请选择 (1/2): " -n 1 -r < /dev/tty
                         echo
 
                         if [[ $REPLY =~ ^[1]$ ]] || [[ -z $REPLY ]]; then

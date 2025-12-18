@@ -115,7 +115,7 @@ echo ""
 echo -e "${YELLOW}请选择要安装的环境（多个选项用空格分隔，如: 1 2 3）${NC}"
 echo -e "${YELLOW}或输入 'all' 安装所有环境，输入 'q' 退出${NC}"
 echo ""
-read -p "👉 请输入选项: " user_input
+read -p "👉 请输入选项: " user_input < /dev/tty
 
 # 处理退出
 if [[ "$user_input" == "q" ]] || [[ "$user_input" == "Q" ]]; then
@@ -160,7 +160,7 @@ for idx in "${selected_indices[@]}"; do
 done
 echo ""
 
-read -p "确认开始安装？(Y/n): " -n 1 -r
+read -p "确认开始安装？(Y/n): " -n 1 -r < /dev/tty
 echo
 if [[ ! $REPLY =~ ^[Yy]$ ]] && [[ ! -z $REPLY ]]; then
     print_info "已取消安装"
