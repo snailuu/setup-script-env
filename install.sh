@@ -16,6 +16,23 @@ CYAN='\033[0;36m'
 MAGENTA='\033[0;35m'
 NC='\033[0m' # No Color
 
+# 检测 TTY 是否真正可用（组合多种检测方法）
+is_tty_available() {
+    # 检查 stdin 是否为 TTY
+    [ -t 0 ] || return 1
+
+    # 尝试实际打开 /dev/tty（捕获错误）
+    { exec 3< /dev/tty; } 2>/dev/null || return 1
+    exec 3<&- 2>/dev/null
+
+    # 检查常见的 CI 环境变量
+    [ "${CI:-false}" = "true" ] && return 1
+    [ -n "${GITHUB_ACTIONS:-}" ] && return 1
+    [ -n "${GITLAB_CI:-}" ] && return 1
+
+    return 0
+}
+
 # 打印带颜色的消息
 print_success() {
     echo -e "${GREEN}✅ $1${NC}"
@@ -116,7 +133,7 @@ echo -e "${YELLOW}请选择要安装的环境（多个选项用空格分隔，�
 echo -e "${YELLOW}或输入 'all' 安装所有环境，输入 'q' 退出${NC}"
 echo ""
 # 检测是否有 TTY 可用，优先从 /dev/tty 读取（解决 curl | bash 问题）
-if [ -r /dev/tty ]; then
+if is_tty_available; then
     read -p "👉 请输入选项: " user_input < /dev/tty
 else
     read -p "👉 请输入选项: " user_input
@@ -166,7 +183,7 @@ done
 echo ""
 
 # 检测是否有 TTY 可用
-if [ -r /dev/tty ]; then
+if is_tty_available; then
     read -p "确认开始安装？(Y/n): " -n 1 -r < /dev/tty
 else
     read -p "确认开始安装？(Y/n): " -n 1 -r

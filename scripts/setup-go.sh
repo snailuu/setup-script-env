@@ -14,6 +14,23 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
+# 检测 TTY 是否真正可用（组合多种检测方法）
+is_tty_available() {
+    # 检查 stdin 是否为 TTY
+    [ -t 0 ] || return 1
+
+    # 尝试实际打开 /dev/tty（捕获错误）
+    { exec 3< /dev/tty; } 2>/dev/null || return 1
+    exec 3<&- 2>/dev/null
+
+    # 检查常见的 CI 环境变量
+    [ "${CI:-false}" = "true" ] && return 1
+    [ -n "${GITHUB_ACTIONS:-}" ] && return 1
+    [ -n "${GITLAB_CI:-}" ] && return 1
+
+    return 0
+}
+
 # 打印带颜色的消息
 print_success() {
     echo -e "${GREEN}✅ $1${NC}"
@@ -62,7 +79,7 @@ EOF
 
 echo ""
 # 检测是否有 TTY 可用
-if [ -r /dev/tty ]; then
+if is_tty_available; then
     read -p "按 Enter 继续，或 Ctrl+C 取消..." < /dev/tty
 else
     read -p "按 Enter 继续，或 Ctrl+C 取消..."
@@ -258,7 +275,7 @@ if command -v go &> /dev/null; then
         echo ""
 
         # 检测是否有 TTY 可用
-        if [ -r /dev/tty ]; then
+        if is_tty_available; then
             read -p "请选择 (1/2，默认为 1): " -n 1 -r < /dev/tty
         else
             read -p "请选择 (1/2，默认为 1): " -n 1 -r
@@ -269,7 +286,7 @@ if command -v go &> /dev/null; then
             print_warning "准备卸载 Homebrew Go..."
             echo ""
             # 检测是否有 TTY 可用
-            if [ -r /dev/tty ]; then
+            if is_tty_available; then
                 read -p "确认卸载？这将删除 $(go version)  (y/N): " -n 1 -r < /dev/tty
             else
                 read -p "确认卸载？这将删除 $(go version)  (y/N): " -n 1 -r
@@ -331,7 +348,7 @@ else
                 echo ""
 
                 # 检测是否有 TTY 可用
-                if [ -r /dev/tty ]; then
+                if is_tty_available; then
                     read -p "请选择 (1/2): " -n 1 -r < /dev/tty
                 else
                     read -p "请选择 (1/2): " -n 1 -r
@@ -365,7 +382,7 @@ else
                         echo ""
 
                         # 检测是否有 TTY 可用
-                        if [ -r /dev/tty ]; then
+                        if is_tty_available; then
                             read -p "请选择 (1/2): " -n 1 -r < /dev/tty
                         else
                             read -p "请选择 (1/2): " -n 1 -r
