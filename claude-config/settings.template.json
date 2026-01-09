@@ -1,0 +1,28 @@
+{
+  "env": {
+    "ANTHROPIC_AUTH_TOKEN": "YOUR_API_KEY_HERE",
+    "ANTHROPIC_BASE_URL": "https://api.anthropic.com"
+  },
+  "enabledPlugins": {
+    "autonomous-skill@claude-code-settings": true,
+    "claude-mem@thedotmack": true,
+    "feature-dev@claude-plugins-official": true
+  },
+  "alwaysThinkingEnabled": true,
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"/Users/snailuu/.cc-tool/notify-hook.js\""
+          }
+        ]
+      }
+    ]
+  }
+}
